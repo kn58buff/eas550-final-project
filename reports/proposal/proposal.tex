@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[left=1.5cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+
+\title{EAS 550 Group Project}
+\author{Kevin Nguyen, Vedant Shinde, Tsomorlig Khishigbold}
+\date{February 8, 2026}
+
+\begin{document}
+
+\maketitle
+
+\section*{Project Theme}
+The theme of our project is supply chain analytics. We intend to build an interactive dashboard that visualizes supply chain operations and order fulfillment patterns using transactional data from a global logistics system. The dashboard will explore trends in order processing, volume of sales, shipping performance, delivery delays, and regional distribution.\\
+\\
+Following the guidelines given to us, our system will ingest the supply chain transaction data, store it in a 3NF PostgreSQL database on Neon, and implement Role-Based Access Control (RBAC). We will then transform our OLTP schema into a Star Schema using dbt to support analytical queries. Finally, we will deploy an interactive Streamlit dashboard that highlights patterns in orders, customers, products, and delivery outcomes.
+
+\section*{Dataset}
+We chose "DataCo SMART SUPPLY CHAIN FOR BIG DATA ANALYSIS":\\
+https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis/data\\
+\\
+We decided to go with this dataset because it contains highly detailed supply chain transaction records collected by DataCo Global and has attributes related to several potential entities such as orders, customers, products, categories, shipping details, and geographic locations. By taking advantage of this structure, we can easily create a a 3NF relational database.\\
+\\
+All the data is in one .csv file containing approximately 180,000 records and many attributes, which makes this perfect practice for building a data ingestion pipeline as well.\\
+\\
+Included in the dataset are key metrics such as sales, profit, shipping costs, order quantities, and delivery times, which means it can easily be transformed into a Star Schema with fact tables and dimension tables, making it well suited for analysis and dashboard-style visualizations.\\
+\\
+These insights will help demonstrate how supply chain data can be used to identify bottlenecks and improve decision-making.
+
+\end{document}
