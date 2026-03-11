@@ -135,6 +135,8 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+# Local virtual environment
+myenv-dmql/
 .env
 .envrc
 .venv
