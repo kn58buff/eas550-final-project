@@ -20,7 +20,8 @@ Columns of the dataset.
     'Product Status', 'shipping date (DateOrders)', 'Shipping Mode'
 ]
 
-# Renamed columns
+# Renamed columns: We can further think of refining these names if need.
+
 ['type', 'days_for_shipping_real', 'days_for_shipment_scheduled',
        'benefit_per_order', 'sales_per_customer', 'delivery_status',
        'late_delivery_risk', 'category_id', 'category_name', 'customer_city',
