@@ -39,6 +39,9 @@ class DataProcessor:
 
             TODO:
                 Check data types and convert to correct type if needed.
+                Remove columns: [Customer Email, Customer Password] -> both have 1 value (XXXXXXXXX), probably scrubbed from data 
+
+                Decide to remove [Product Status] or not. Every item in this dataset is available (product status = 0), but could justify keeping it as a design choice for the possibility of unavailable items.
         """
         # Check 1: Missing values
         print(f"Dataset size: {df.shape}")
