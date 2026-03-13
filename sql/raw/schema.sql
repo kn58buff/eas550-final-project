@@ -42,6 +42,76 @@ Columns of the dataset.
 
 Based on the columns.
 
+Basic Tables structure (51 columns total):
+CUSTOMERS:
+    int customer_id PK
+    string first_name
+    string last_name
+    string email
+    string segment
+    string street
+    string city
+    string state
+    string country
+    string zipcode
+    float latitude
+    float longitude
+    string market
+
+
+DEPARTMENTS
+    int department_id PK
+    string department_name
+
+CATEGORIES
+    int category_id PK
+    string category_name
+    int department_id FK
+
+PRODUCTS
+    int product_id PK
+    string product_name
+    float product_price
+    string product_status
+    string product_image
+    int category_id FK
+
+ORDERS
+    int order_id PK
+    int customer_id FK
+    date order_date
+    date shipping_date
+    string order_status
+    string shipping_mode
+    string delivery_status
+    int late_delivery_risk
+    string order_city
+    string order_state
+    string order_country
+    string order_zipcode
+    string order_region
+    int days_shipping_real
+    int days_shipping_scheduled
+    float order_profit_per_order
+    string payment_type
+
+
+ORDER_ITEMS
+    int order_item_id PK
+    int order_id FK
+    int product_id FK
+    int quantity
+    float product_price
+    float discount
+    float discount_rate
+    float profit_ratio
+    float item_total
+    float sales
+    float benefit_per_order
+    float sales_per_customer
+
+
+
 Tables:
 
 Customers:

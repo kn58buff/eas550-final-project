@@ -31,6 +31,7 @@ class DataProcessor:
 
         return df
     
+    # Reminder to have these cleaning functions as part of the cleaning suite/pipeline.
     def rename_columns(self, df):
         """
         Convert column names to clean snake_case format.
@@ -81,3 +82,4 @@ print(raw_df)
 df = obj1.rename_columns(raw_df)
 print(df.columns)
 print(df.shape)
+# print(df["delivery_status"].unique())
