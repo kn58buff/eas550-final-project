@@ -158,5 +158,90 @@ Countries
     CountryID, CountryName, RegionID
 PaymentTypes
     PaymentTypeID, PaymentTypeName
-
 */
+
+
+
+CREATE TABLE IF NOT EXISTS departments (
+    department_id INT PRIMARY KEY,
+    department_name TEXT NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS categories (
+    category_id INT PRIMARY KEY,
+    category_name TEXT NOT NULL,
+    department_id INT NOT NULL,
+    FOREIGN KEY (department_id)
+        REFERENCES departments(department_id)
+);
+
+CREATE TABLE IF NOT EXISTS products (
+    product_id INT PRIMARY KEY,
+    product_name TEXT NOT NULL,
+    product_price NUMERIC,
+    product_status TEXT,
+    product_image TEXT,
+    category_id INT NOT NULL,
+    FOREIGN KEY (category_id)
+        REFERENCES categories(category_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS customers (
+    customer_id INT PRIMARY KEY,
+    first_name TEXT,
+    last_name TEXT,
+    email TEXT,
+    segment TEXT,
+    street TEXT,
+    city TEXT,
+    state TEXT,
+    country TEXT,
+    zipcode TEXT,
+    latitude NUMERIC,
+    longitude NUMERIC,
+    market TEXT
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    order_date DATE,
+    shipping_date DATE,
+    order_status TEXT,
+    shipping_mode TEXT,
+    delivery_status TEXT,
+    late_delivery_risk INT,
+    order_city TEXT,
+    order_state TEXT,
+    order_country TEXT,
+    order_zipcode TEXT,
+    order_region TEXT,
+    days_shipping_real INT,
+    days_shipping_scheduled INT,
+    order_profit_per_order NUMERIC,
+    payment_type TEXT,
+    FOREIGN KEY (customer_id)
+        REFERENCES customers(customer_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS order_items (
+    order_item_id INT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT,
+    product_price NUMERIC,
+    discount NUMERIC,
+    discount_rate NUMERIC,
+    profit_ratio NUMERIC,
+    item_total NUMERIC,
+    sales NUMERIC,
+    benefit_per_order NUMERIC,
+    sales_per_customer NUMERIC,
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id),
+    FOREIGN KEY (product_id)
+        REFERENCES products(product_id)
+);
