@@ -1,16 +1,20 @@
 -- Add RBAC using 2 roles: analyst and app user
 -- Analyst: SELECT, App User: SELECT, INSERT, UPDATE
+-- SELECT rolname
+-- FROM pg_roles
 
-CREATE ROLE analyst;
-CREATE ROLE app_user;
+
 
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO analyst;
 
-GRANT INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
+-- App user: application read/write
+-- App/admin user: read and write
+GRANT SELECT, INSERT, UPDATE, DELETE
+ON ALL TABLES IN SCHEMA public
+TO app_user;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT SELECT ON TABLES TO analyst;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
-GRANT INSERT, UPDATE, DELETE ON TABLES TO app_user;
-
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_user;
