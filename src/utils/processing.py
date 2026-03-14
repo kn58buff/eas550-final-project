@@ -30,8 +30,21 @@ class DataProcessor:
         df = pd.read_csv(self.data_path, encoding = "ISO-8859-1")
 
         return df
+    
+    # Reminder to have these cleaning functions as part of the cleaning suite/pipeline.
+    def rename_columns(self, df):
+        """
+        Convert column names to clean snake_case format.
+        """
 
-    def check_data(df):
+        df.columns = (df.columns.str.strip().str.lower().str.replace(" ", "_").str.replace(r"[()]", "", regex=True).str.replace(r"[^a-z0-9_]", "", regex=True))
+
+        print("Columns renamed successfully.")
+        print(df.columns)
+
+        return df
+
+    def check_data(self, df):
         """
             Preprocess the dataframe.
 
@@ -61,3 +74,12 @@ class DataProcessor:
         print("Dropped column Order Zipcode")
 
         return df
+
+obj1 = DataProcessor(DATA_PATH)
+raw_df = obj1.load_data()
+print(raw_df)
+
+df = obj1.rename_columns(raw_df)
+print(df.columns)
+print(df.shape)
+# print(df["delivery_status"].unique())
