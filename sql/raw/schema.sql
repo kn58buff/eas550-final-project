@@ -20,10 +20,6 @@ Columns of the dataset.
     'Product Status', 'shipping date (DateOrders)', 'Shipping Mode'
 ]
 
-<<<<<<< HEAD
-Based on the columns.
-
-=======
 # Renamed columns: We can further think of refining these names if need.
 
 
@@ -165,6 +161,9 @@ Countries
 PaymentTypes
     PaymentTypeID, PaymentTypeName
 
+<<<<<<< HEAD
+*/
+=======
 
 
 SELECT table_name
@@ -172,6 +171,7 @@ FROM information_schema.tables
 WHERE table_schema='public'
 */
 
+>>>>>>> origin/main
 */
 
 
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS customers (
 
 CREATE TABLE IF NOT EXISTS orders (
     order_id INT PRIMARY KEY,
-    customer_id INT NOT NULL,
+    order_customer_id INT NOT NULL,
     order_date DATE,
     shipping_date DATE,
     order_status TEXT,
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS orders (
     days_shipping_scheduled INT,
     order_profit_per_order NUMERIC,
     payment_type TEXT,
-    FOREIGN KEY (customer_id)
+    FOREIGN KEY (order_customer_id)
         REFERENCES customers(customer_id)
 );
 
@@ -246,7 +246,7 @@ CREATE TABLE IF NOT EXISTS order_items (
     order_id INT NOT NULL,
     product_id INT NOT NULL,
     quantity INT,
-    product_price NUMERIC,
+    order_item_product_price NUMERIC,
     discount NUMERIC,
     discount_rate NUMERIC,
     profit_ratio NUMERIC,
