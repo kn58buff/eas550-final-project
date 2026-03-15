@@ -81,6 +81,7 @@ class Loader():
     def run_loader(self):
         self._process_data()
         
+        # Uncomment this once it is made idempotent
         #self._load_dataframe()
 
         # checks to see data is loaded correctly
