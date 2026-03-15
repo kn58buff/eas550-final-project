@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS orders (
     days_shipping_scheduled INT,
     order_profit_per_order NUMERIC,
     payment_type TEXT,
-    FOREIGN KEY (customer_id)
+    FOREIGN KEY (order_customer_id)
         REFERENCES customers(customer_id)
 );
 
