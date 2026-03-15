@@ -20,8 +20,6 @@ Columns of the dataset.
     'Product Status', 'shipping date (DateOrders)', 'Shipping Mode'
 ]
 
-Based on the columns.
-
 # Renamed columns: We can further think of refining these names if need.
 
 
@@ -115,6 +113,7 @@ ORDER_ITEMS
 
 
 
+>>>>>>> origin/DMQL-1
 Tables:
 
 Customers:
@@ -162,7 +161,17 @@ Countries
 PaymentTypes
     PaymentTypeID, PaymentTypeName
 
+<<<<<<< HEAD
 */
+=======
+
+
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema='public'
+*/
+
+>>>>>>> origin/main
 */
 
 
