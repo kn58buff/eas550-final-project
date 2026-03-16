@@ -33,18 +33,27 @@ class Loader():
         self.data = self.processor.run() # dictionary of data
     
     def _load_dataframe(self):
-        # TODO - idempotency
-        for table_name, df in self.data.items():
-            print(f"Adding {table_name} with columns {df.columns}")
-            df.to_sql(
-                table_name,
-                self.engine,
-                if_exists = "append",
-                index = False,
-                method = "multi"
-            )
+        for table_name in self.table_names:
 
-            print(f"Loaded {df.shape[0]} rows into table: {table_name}.")
+            df = self.data[table_name]
+            print(f"\nLoading table: {table_name}")
+            print(f"Columns: {list(df.columns)}")
+
+            pk = df.columns[0]
+
+            existing = pd.read_sql(f"SELECT {pk} FROM {table_name}", self.engine)
+
+            # Remove rows already present in DB
+            df = df[~df[pk].isin(existing[pk])]
+
+            print(f"{table_name}: {len(df)} new rows to insert")
+
+            if not df.empty:
+                df.to_sql(table_name, self.engine, if_exists = "append", index = False, method = "multi")
+
+                print(f"Inserted {df.shape[0]} rows into table: {table_name}")
+            else:
+                print(f"No new rows to insert for table: {table_name}")
 
     def _validate(self):
         """
@@ -82,7 +91,7 @@ class Loader():
         self._process_data()
         
         # Uncomment this once it is made idempotent
-        #self._load_dataframe()
+        self._load_dataframe()
 
         # checks to see data is loaded correctly
         if self._validate():
