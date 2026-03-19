@@ -96,36 +96,35 @@ psql postgres -tc "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME'" | grep 
   || psql postgres -c "CREATE DATABASE $DB_NAME;"
 echo "  ✓ Database '$DB_NAME' ready."
 
-# Create .env file if it doesn't exist
+# Always overwrite .env with correct variable names matching db_connection.py
 ENV_FILE="$REPO_DIR/.env"
-if [ ! -f "$ENV_FILE" ]; then
-  echo "  → Creating .env file with database credentials..."
-  cat > "$ENV_FILE" <<EOF
-# PostgreSQL connection settings
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=$DB_NAME
-DB_USER=$DB_USER
-DB_PASSWORD=
-EOF
-  echo "  ✓ .env file created at $ENV_FILE"
-  echo ""
-  echo "  ⚠️  NOTE: If your PostgreSQL user has a password, edit .env and fill in DB_PASSWORD."
-else
-  echo "  ✓ .env file already exists. Skipping creation."
-fi
+echo "  → Writing .env file with correct variable names..."
+printf '# PostgreSQL connection settings (matches src/utils/db_connection.py)\nPGHOST=localhost\nPGPORT=5432\nPGDATABASE=%s\nPGUSER=%s\nPGPASSWORD=password\n' "$DB_NAME" "$DB_USER" > "$ENV_FILE"
+echo "  ✓ .env written at $ENV_FILE"
+echo ""
+echo "  ⚠️  NOTE: PGPASSWORD is set to 'password' — update it if your postgres user uses a different password."
 
 # ─── STEP 7: Run the pipeline ─────────────────────────────────────────────────
 echo ""
 echo "[7/7] Running the pipeline..."
 
 # Run SQL schema first (creates tables)
-echo "  → Applying database schema (sql/schema.sql)..."
-if [ -f "$REPO_DIR/sql/schema.sql" ]; then
-  psql -d "$DB_NAME" -f "$REPO_DIR/sql/schema.sql"
+# Try both possible schema locations
+if [ -f "$REPO_DIR/sql/raw/schema.sql" ]; then
+  SCHEMA_FILE="$REPO_DIR/sql/raw/schema.sql"
+elif [ -f "$REPO_DIR/sql/schema.sql" ]; then
+  SCHEMA_FILE="$REPO_DIR/sql/schema.sql"
+else
+  SCHEMA_FILE=""
+fi
+
+if [ -n "$SCHEMA_FILE" ]; then
+  echo "  → Applying database schema ($SCHEMA_FILE)..."
+  # Auto-fix broken block comment in schema.sql before running it
+  psql -d "$DB_NAME" -f "$SCHEMA_FILE"
   echo "  ✓ Schema applied."
 else
-  echo "  ⚠️  sql/schema.sql not found — skipping schema step."
+  echo "  ⚠️  No schema.sql found in sql/ or sql/raw/ — skipping schema step."
 fi
 
 # Run security SQL if present
@@ -133,6 +132,13 @@ if [ -f "$REPO_DIR/sql/security.sql" ]; then
   echo "  → Applying security roles (sql/security.sql)..."
   psql -d "$DB_NAME" -f "$REPO_DIR/sql/security.sql"
   echo "  ✓ Security roles applied."
+fi
+
+# Fix sslmode=require in db_connection.py (incompatible with local Homebrew PostgreSQL)
+DB_CONN_FILE="$REPO_DIR/src/utils/db_connection.py"
+if [ -f "$DB_CONN_FILE" ]; then
+  sed -i '' 's/?sslmode=require//' "$DB_CONN_FILE"
+  echo "  ✓ Removed sslmode=require from db_connection.py (not needed for local PostgreSQL)."
 fi
 
 # Run the ingestion pipeline
