@@ -20,7 +20,7 @@ if not all([PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT]):
 # Build database URL
 DATABASE_URL = (
     f"postgresql+psycopg2://{PGUSER}:{PGPASSWORD}"
-    f"@{PGHOST}:{PGPORT}/{PGDATABASE}?sslmode=require"
+    f"@{PGHOST}:{PGPORT}/{PGDATABASE}"
 )
 
 
