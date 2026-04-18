@@ -125,17 +125,17 @@ jobs:
           mkdir -p .dbt
           cat > eas550_final_project/profiles.yml << 'EOF'
           eas550_final_project:
-          target: ci
-          outputs:
-            ci:
-              type: postgres
-              host: localhost
-              port: 5432
-              user: ci_user
-              password: ci_password
-              dbname: eas550_db
-              schema: public
-              threads: 4
+            target: ci
+            outputs:
+              ci:
+                type: postgres
+                host: localhost
+                port: 5432
+                user: ci_user
+                password: ci_password
+                dbname: eas550_db
+                schema: public
+                threads: 4
           EOF
       - name: Install dbt-postgres
         run: pip install dbt-postgres
