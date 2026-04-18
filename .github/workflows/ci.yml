@@ -66,13 +66,13 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: eas550_db
-          POSTGRES_USER: ci_user
-          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: supply_chain
+          POSTGRES_USER: neondb_owner
+          POSTGRES_PASSWORD: npg_aUIEJS42AWfL
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U ci_user"
+          --health-cmd "pg_isready -U neondb_owner"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -129,11 +129,11 @@ jobs:
             outputs:
               ci:
                 type: postgres
-                host: localhost
+                host: ep-red-dawn-a4kwjzvp-pooler.us-east-1.aws.neon.tech
                 port: 5432
-                user: ci_user
-                password: ci_password
-                dbname: eas550_db
+                user: neondb_owner
+                password: npg_aUIEJS42AWfL
+                dbname: supply_chain
                 schema: public
                 threads: 4
           EOF
