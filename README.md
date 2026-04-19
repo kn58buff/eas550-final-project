@@ -1,3 +1,5 @@
+## [Demo Video](https://www.youtube.com/watch?v=mQthIpo0eGE)
+
 # 🗄️ CSV to 3NF Data Pipeline
 
 Raw CSV Data → Structured PostgreSQL Database → Fully Normalized 3NF Schema
@@ -110,6 +112,7 @@ eas550-final-project/
 - SQL
 - Git
 ```
+
 
 ## 👥 Authors
 
