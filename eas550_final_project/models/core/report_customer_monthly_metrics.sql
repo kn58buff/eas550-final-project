@@ -1,9 +1,14 @@
 {{ config(materialized='table') }}
 
-with monthly_orders as (
+with fact_orders as (
+    select * from {{ ref('fact_orders') }}
+),
 
-    -- Step 1: Aggregate line items up to order level + month
-    -- customer_id, order_date, and the measure columns all live on fact_orders
+dim_customers as (
+    select * from {{ ref('dim_customers') }}
+),
+
+monthly_orders as (
     select
         customer_id,
         date_trunc('month', order_date)::date   as order_month,
@@ -11,15 +16,12 @@ with monthly_orders as (
         sum(line_item_sales_total)              as order_revenue,
         sum(profit)                             as order_profit,
         count(*)                                as line_items
-    from {{ ref('fact_orders') }}
+    from fact_orders
     where order_date is not null
     group by 1, 2, 3
-
 ),
 
 customer_monthly as (
-
-    -- Step 2: Collapse to customer-month grain
     select
         customer_id,
         order_month,
@@ -29,15 +31,9 @@ customer_monthly as (
         sum(line_items)         as total_line_items
     from monthly_orders
     group by 1, 2
-
 ),
 
 customer_running_totals as (
-
-    -- Step 3: Bring in customer attributes + window functions
-    -- dim_customers exposes: customer_id, first_name, last_name,
-    --                        segment, city, state
-    -- 'market' no longer exists on this dim, so replaced with 'city'/'state'
     select
         cm.customer_id,
         cm.order_month,
@@ -67,13 +63,11 @@ customer_running_totals as (
         )                       as active_month_number
 
     from customer_monthly cm
-    left join {{ ref('dim_customers') }} dc
+    left join dim_customers dc
         on cm.customer_id = dc.customer_id
-
 ),
 
 final as (
-
     select
         customer_id,
         order_month,
@@ -97,15 +91,12 @@ final as (
                 )
         end                     as mom_revenue_pct_change,
 
-        -- rank() is a window function so it must stay here in final,
-        -- where both order_month and segment are already resolved columns
         rank() over (
             partition by order_month, segment
             order by     monthly_revenue desc
         )                       as segment_rank_this_month
 
     from customer_running_totals
-
 )
 
 select *

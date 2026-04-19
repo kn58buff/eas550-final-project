@@ -1,12 +1,18 @@
-with order_products as (
+with fact_orders as (
+    select * from {{ ref('fact_orders') }}
+),
+
+dim_products as (
+    select * from {{ ref('dim_products') }}
+),
+
+order_products as (
     select distinct
         order_id,
         product_id
     from fact_orders
 ),
 
--- Self-join to get every pair within the same order
--- p1.product_id < p2.product_id avoids counting (A,B) and (B,A) separately
 product_pairs as (
     select
         a.product_id    as product_a,
