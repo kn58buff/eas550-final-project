@@ -1,2 +1,4 @@
 dbt_packages/
 logs/
+target/compiled
+target/run
