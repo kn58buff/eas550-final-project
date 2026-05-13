@@ -112,9 +112,12 @@ jobs:
         working-directory: eas550_final_project
         run: dbt deps
 
+      # Build every model + run every test. Selecting a subset
+      # (e.g. +report_daily_revenue) skips models that other tests
+      # reference, causing "relation does not exist" failures.
       - name: dbt build
         working-directory: eas550_final_project
-        run: dbt build --select +report_daily_revenue
+        run: dbt build
 
       - name: Upload dbt artifacts
         if: always()

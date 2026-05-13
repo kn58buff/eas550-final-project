@@ -4,76 +4,81 @@ models:
   - name: stg_orders
     columns:
       - name: order_id
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: customer_id
-        tests:
+        data_tests:
           - not_null
 
   - name: stg_order_items
     columns:
       - name: order_item_id
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: order_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
-              to: ref('stg_orders')
-              field: order_id
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
       - name: product_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
-              to: ref('stg_products')
-              field: product_id
+              arguments:
+                to: ref('stg_products')
+                field: product_id
 
   - name: stg_products
     columns:
       - name: product_id
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: category_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
-              to: ref('stg_categories')
-              field: category_id
+              arguments:
+                to: ref('stg_categories')
+                field: category_id
 
   - name: stg_categories
     columns:
       - name: category_id
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: department_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
-              to: ref('stg_departments')
-              field: department_id
+              arguments:
+                to: ref('stg_departments')
+                field: department_id
 
   - name: stg_departments
     columns:
       - name: department_id
-        tests:
+        data_tests:
           - unique
           - not_null
 
   - name: stg_customers
     columns:
       - name: customer_id
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: segment
-        tests:
+        data_tests:
           - accepted_values:
-              values:
-                - Consumer
-                - Corporate
-                - Home Office
-              quote: true
+              arguments:
+                values:
+                  - Consumer
+                  - Corporate
+                  - Home Office
+                quote: true
