@@ -4,17 +4,16 @@
 -- FROM pg_roles
 
 
-
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO analyst;
+grant select on all tables in schema public to analyst;
 
 -- App user: application read/write
 -- App/admin user: read and write
-GRANT SELECT, INSERT, UPDATE, DELETE
-ON ALL TABLES IN SCHEMA public
-TO app_user;
+grant select, insert, update, delete
+on all tables in schema public
+to app_user;
 
-ALTER DEFAULT PRIVILEGES IN SCHEMA public
-GRANT SELECT ON TABLES TO analyst;
+alter default privileges in schema public
+grant select on tables to analyst;
 
-ALTER DEFAULT PRIVILEGES IN SCHEMA public
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_user;
+alter default privileges in schema public
+grant select, insert, update, delete on tables to app_user;

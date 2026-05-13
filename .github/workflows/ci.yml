@@ -33,13 +33,9 @@ jobs:
       # Lint hand-written SQL under sql/ and dbt models under
       # eas550_final_project/models/. The dbt models live inside the
       # project subdirectory, so the path must include that prefix.
+      # Rules and dialect are configured in .sqlfluff at the repo root.
       - name: Run SQLFluff lint
-        run: |
-          sqlfluff lint \
-            --dialect postgres \
-            --exclude-rules ST06,TMP \
-            sql/ \
-            eas550_final_project/models/
+        run: sqlfluff lint sql/ eas550_final_project/models/
 
   # ──────────────────────────────────────────────
   # JOB 2: Apply schema and run dbt against the configured Postgres
