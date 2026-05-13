@@ -1,11 +1,11 @@
-DROP TABLE IF EXISTS order_items;
+drop table if exists order_items;
 
-DROP TABLE IF EXISTS orders;
+drop table if exists orders;
 
-DROP TABLE IF EXISTS products;
+drop table if exists products;
 
-DROP TABLE IF EXISTS categories;
+drop table if exists categories;
 
-DROP TABLE IF EXISTS departments;
+drop table if exists departments;
 
-DROP TABLE IF EXISTS customers;
+drop table if exists customers;

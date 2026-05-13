@@ -112,7 +112,6 @@ ORDER_ITEMS
     float sales_per_customer
 
 
-
 >>>>>>> origin/DMQL-1
 Tables:
 
@@ -132,7 +131,8 @@ Categories
     Category ID, Category Name
 
 Products
-    Product Card ID, Product Category ID, Product Description, Product Image, Product Name, Product Price, Product Status
+    Product Card ID, Product Category ID, Product Description, Product Image,
+    Product Name, Product Price, Product Status
 
 Markets
     MarketID, Market Name, Region iD
@@ -172,87 +172,86 @@ WHERE table_schema='public'
 */
 
 
-
-CREATE TABLE IF NOT EXISTS departments (
-    department_id INT PRIMARY KEY,
-    department_name TEXT NOT NULL
+create table if not exists departments (
+    department_id int primary key,
+    department_name text not null
 );
 
 
-CREATE TABLE IF NOT EXISTS categories (
-    category_id INT PRIMARY KEY,
-    category_name TEXT NOT NULL,
-    department_id INT NOT NULL,
-    FOREIGN KEY (department_id)
-        REFERENCES departments(department_id)
+create table if not exists categories (
+    category_id int primary key,
+    category_name text not null,
+    department_id int not null,
+    foreign key (department_id)
+    references departments (department_id)
 );
 
-CREATE TABLE IF NOT EXISTS products (
-    product_id INT PRIMARY KEY,
-    product_name TEXT NOT NULL,
-    product_price NUMERIC,
-    product_status TEXT,
-    product_image TEXT,
-    category_id INT NOT NULL,
-    FOREIGN KEY (category_id)
-        REFERENCES categories(category_id)
-);
-
-
-CREATE TABLE IF NOT EXISTS customers (
-    customer_id INT PRIMARY KEY,
-    first_name TEXT,
-    last_name TEXT,
-    email TEXT,
-    segment TEXT,
-    street TEXT,
-    city TEXT,
-    state TEXT,
-    country TEXT,
-    zipcode TEXT,
-    latitude NUMERIC,
-    longitude NUMERIC,
-    market TEXT
-);
-
-CREATE TABLE IF NOT EXISTS orders (
-    order_id INT PRIMARY KEY,
-    order_customer_id INT NOT NULL,
-    order_date DATE,
-    shipping_date DATE,
-    order_status TEXT,
-    shipping_mode TEXT,
-    delivery_status TEXT,
-    late_delivery_risk INT,
-    order_city TEXT,
-    order_state TEXT,
-    order_country TEXT,
-    order_zipcode TEXT,
-    order_region TEXT,
-    days_shipping_real INT,
-    days_shipping_scheduled INT,
-    order_profit_per_order NUMERIC,
-    payment_type TEXT,
-    FOREIGN KEY (order_customer_id)
-        REFERENCES customers(customer_id)
+create table if not exists products (
+    product_id int primary key,
+    product_name text not null,
+    product_price numeric,
+    product_status text,
+    product_image text,
+    category_id int not null,
+    foreign key (category_id)
+    references categories (category_id)
 );
 
 
-CREATE TABLE IF NOT EXISTS order_items (
-    order_item_id INT PRIMARY KEY,
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT,
-    order_item_product_price NUMERIC,
-    discount NUMERIC,
-    discount_rate NUMERIC,
-    profit_ratio NUMERIC,
-    item_total NUMERIC,
-    sales NUMERIC,
-    benefit_per_order NUMERIC,
-    sales_per_customer NUMERIC,
-    FOREIGN KEY (order_id)
-        REFERENCES orders(order_id),
-    FOREIGN KEY (product_id)
-        REFERENCES products(product_id)
+create table if not exists customers (
+    customer_id int primary key,
+    first_name text,
+    last_name text,
+    email text,
+    segment text,
+    street text,
+    city text,
+    state text,
+    country text,
+    zipcode text,
+    latitude numeric,
+    longitude numeric,
+    market text
+);
+
+create table if not exists orders (
+    order_id int primary key,
+    order_customer_id int not null,
+    order_date date,
+    shipping_date date,
+    order_status text,
+    shipping_mode text,
+    delivery_status text,
+    late_delivery_risk int,
+    order_city text,
+    order_state text,
+    order_country text,
+    order_zipcode text,
+    order_region text,
+    days_shipping_real int,
+    days_shipping_scheduled int,
+    order_profit_per_order numeric,
+    payment_type text,
+    foreign key (order_customer_id)
+    references customers (customer_id)
+);
+
+
+create table if not exists order_items (
+    order_item_id int primary key,
+    order_id int not null,
+    product_id int not null,
+    quantity int,
+    order_item_product_price numeric,
+    discount numeric,
+    discount_rate numeric,
+    profit_ratio numeric,
+    item_total numeric,
+    sales numeric,
+    benefit_per_order numeric,
+    sales_per_customer numeric,
+    foreign key (order_id)
+    references orders (order_id),
+    foreign key (product_id)
+    references products (product_id)
 );

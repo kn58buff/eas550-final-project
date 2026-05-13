@@ -8,71 +8,76 @@ sources:
       - name: orders
         columns:
           - name: order_id
-            tests:
+            data_tests:
               - unique
               - not_null
           - name: order_customer_id
-            tests:
+            data_tests:
               - not_null
               - relationships:
-                  to: source('raw_supply_chain', 'customers')
-                  field: customer_id
+                  arguments:
+                    to: source('raw_supply_chain', 'customers')
+                    field: customer_id
 
       - name: order_items
         columns:
           - name: order_item_id
-            tests:
+            data_tests:
               - unique
               - not_null
           - name: order_id
-            tests:
+            data_tests:
               - not_null
               - relationships:
-                  to: source('raw_supply_chain', 'orders')
-                  field: order_id
+                  arguments:
+                    to: source('raw_supply_chain', 'orders')
+                    field: order_id
           - name: product_id
-            tests:
+            data_tests:
               - not_null
               - relationships:
-                  to: source('raw_supply_chain', 'products')
-                  field: product_id
+                  arguments:
+                    to: source('raw_supply_chain', 'products')
+                    field: product_id
 
       - name: products
         columns:
           - name: product_id
-            tests:
+            data_tests:
               - unique
               - not_null
           - name: category_id
-            tests:
+            data_tests:
               - not_null
               - relationships:
-                  to: source('raw_supply_chain', 'categories')
-                  field: category_id
+                  arguments:
+                    to: source('raw_supply_chain', 'categories')
+                    field: category_id
 
       - name: customers
         columns:
           - name: customer_id
-            tests:
+            data_tests:
               - unique
               - not_null
 
       - name: categories
         columns:
           - name: category_id
-            tests:
+            data_tests:
               - unique
               - not_null
           - name: department_id
-            tests:
+            data_tests:
               - not_null
               - relationships:
-                  to: source('raw_supply_chain', 'departments')
-                  field: department_id
+                  arguments:
+                    to: source('raw_supply_chain', 'departments')
+                    field: department_id
 
       - name: departments
         columns:
           - name: department_id
-            tests:
+            data_tests:
               - unique
               - not_null

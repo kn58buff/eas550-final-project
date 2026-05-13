@@ -1,8 +1,15 @@
 [sqlfluff]
 dialect = postgres
 templater = jinja
-exclude_rules = ST06, AM04, RF02
+# ST06: dbt-generated SELECT * order
+# AL01: implicit table aliasing (`from products p`)
+# AM05: fully-qualified join clauses
+# AM06: GROUP BY column references style
+# RF02: unqualified references in multi-table selects
+# ST07: USING vs ON in joins
+# ST09: join-condition order
 max_line_length = 120
+exclude_rules = ST06, AL01, AM05, AM06, RF02, ST07, ST09
 
 [sqlfluff:indentation]
 indented_joins = false

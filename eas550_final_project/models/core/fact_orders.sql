@@ -12,15 +12,15 @@ products as (
 
 select
     oi.order_item_id,
-    
+
     o.order_id,
     o.customer_id,
     p.product_id,
-    
+
     o.order_date,
     o.status as order_status,
     o.shipping_mode,
-    
+
     oi.quantity,
     oi.unit_price,
     oi.discount,
