@@ -1,5 +1,4 @@
 ## [Demo Video](https://www.youtube.com/watch?v=mQthIpo0eGE)
-
 ## [Dashboard Link] (https://eas550-supply-chain-dashboard.onrender.com/)
 # 🗄️ CSV to 3NF Data Pipeline
 
@@ -105,7 +104,7 @@ eas550-final-project/
 
 ## ER Diagram
 
-![ER Diagram](reports/diagrams/er_diagram.png)
+![ER Diagram](reports/diagrams/erd.png)
 
 ## Star Schema
 ![Star Schema Diagram](reports/diagrams/star_schema.png)
