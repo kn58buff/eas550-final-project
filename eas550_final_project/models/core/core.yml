@@ -5,9 +5,72 @@ models:
     description: "Central fact table for supply chain orders at the item level."
     columns:
       - name: order_item_id
+        description: "Primary key — one row per line item."
         tests:
           - unique
           - not_null
       - name: order_id
+        description: "Foreign key to dim_orders / stg_orders."
         tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: customer_id
+        description: "Foreign key to dim_customers."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: product_id
+        description: "Foreign key to dim_products."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+      - name: order_status
+        description: "Lifecycle status of the order."
+        tests:
+          - accepted_values:
+              values:
+                - COMPLETE
+                - PENDING
+                - PENDING_PAYMENT
+                - PROCESSING
+                - CLOSED
+                - ON_HOLD
+                - SUSPECTED_FRAUD
+                - CANCELED
+                - PAYMENT_REVIEW
+              quote: true
+      - name: shipping_mode
+        description: "Carrier shipping method selected on the order."
+        tests:
+          - accepted_values:
+              values:
+                - Standard Class
+                - First Class
+                - Second Class
+                - Same Day
+              quote: true
+      - name: quantity
+        tests:
+          - not_null
+
+  - name: dim_customers
+    description: "Customer dimension."
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_products
+    description: "Product dimension enriched with category and department."
+    columns:
+      - name: product_id
+        tests:
+          - unique
           - not_null
