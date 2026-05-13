@@ -1,5 +1,6 @@
 ## [Demo Video](https://www.youtube.com/watch?v=mQthIpo0eGE)
 
+## [Dashboard Link] (https://eas550-supply-chain-dashboard.onrender.com/)
 # 🗄️ CSV to 3NF Data Pipeline
 
 Raw CSV Data → Structured PostgreSQL Database → Fully Normalized 3NF Schema
@@ -102,6 +103,13 @@ eas550-final-project/
 └── README.md
 ```
 
+## ER Diagram
+
+![ER Diagram](diagrams/er_diagram.png)
+
+## Star Schema
+![Star Schema Diagram](images/star_schema.png)
+
 
 ## ⚙️ Tech Stack
 ```
@@ -119,3 +127,4 @@ eas550-final-project/
 - Kevin Ngyuen
 - Tsomorlig Khishigbold
 - Vedant Shinde
+- Aditya More
