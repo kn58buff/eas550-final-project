@@ -105,10 +105,10 @@ eas550-final-project/
 
 ## ER Diagram
 
-![ER Diagram](diagrams/er_diagram.png)
+![ER Diagram](reports/diagrams/er_diagram.png)
 
 ## Star Schema
-![Star Schema Diagram](images/star_schema.png)
+![Star Schema Diagram](reports/diagrams/star_schema.png)
 
 
 ## ⚙️ Tech Stack
