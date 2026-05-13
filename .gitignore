@@ -142,7 +142,10 @@ celerybeat.pid
 # Local virtual environment
 myenv-dmql/
 .env
+.env.*
+!.env.example
 .envrc
+.streamlit/secrets.toml
 .venv
 env/
 venv/

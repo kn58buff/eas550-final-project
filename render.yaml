@@ -1,0 +1,47 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+#
+# How this hooks up to continuous deployment:
+#   1. Push this file to GitHub.
+#   2. In Render → New → Blueprint → connect the repo.
+#   3. Render reads render.yaml and creates the service.
+#   4. Every push to `branch` below triggers a new deploy.
+#
+# Credentials live ONLY in Render's environment settings (or in a
+# linked Environment Group). Nothing sensitive is committed here.
+
+services:
+  - type: web
+    name: eas550-supply-chain-dashboard
+    runtime: python
+    plan: free
+    branch: main
+    autoDeploy: true
+    rootDir: streamlit_app
+    buildCommand: pip install -r requirements.txt
+    startCommand: >
+      streamlit run app.py
+      --server.port $PORT
+      --server.address 0.0.0.0
+      --server.headless true
+      --server.enableCORS false
+      --server.enableXsrfProtection false
+    healthCheckPath: /_stcore/health
+    envVars:
+      # Mark these as `sync: false` so Render prompts for the values
+      # in the dashboard instead of pulling them from this file.
+      - key: PGHOST
+        sync: false
+      - key: PGPORT
+        value: "5432"
+      - key: PGDATABASE
+        sync: false
+      - key: PGUSER
+        sync: false
+      - key: PGPASSWORD
+        sync: false
+      - key: PGSSLMODE
+        value: require
+      - key: PG_POOL_MAX
+        value: "5"
+      - key: PYTHON_VERSION
+        value: "3.11.9"
