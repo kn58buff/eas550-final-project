@@ -188,4 +188,4 @@ eas550-final-project/
 
 ## License
 
-Coursework project — not licensed for commercial reuse.
+Coursework project. Not licensed for commercial reuse.
