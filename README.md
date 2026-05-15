@@ -1,129 +1,191 @@
-## [Demo Video](https://www.youtube.com/watch?v=mQthIpo0eGE)
-## [Dashboard Link] (https://eas550-supply-chain-dashboard.onrender.com/)
-# 🗄️ CSV to 3NF Data Pipeline
+# Supply Chain Data Pipeline
 
-Raw CSV Data → Structured PostgreSQL Database → Fully Normalized 3NF Schema
+[![Demo](https://img.shields.io/badge/demo-YouTube-red)](https://youtu.be/BUOzIpEk3aI)
+[![Dashboard](https://img.shields.io/badge/dashboard-live-brightgreen)](https://eas550-supply-chain-dashboard.onrender.com/)
 
-An end-to-end data engineering pipeline that ingests raw CSV datasets into PostgreSQL and transforms them into a fully normalized relational database (Third Normal Form) using SQL-based transformations.
+Our end-to-end data engineering pipeline that ingests the DataCo supply chain dataset into PostgreSQL and transforms it into a 3NF database, with further transformations into a star schema to make the data analytics-ready.
 
-This project demonstrates real-world database engineering practices, including schema design, normalization, and structured ETL pipelines.
+Built as a project for **EAS 550**.
 
-## ✨ Key Features
-### 📥 CSV Data Ingestion
+## Setup
 
-Automated ingestion of raw CSV datasets
+### Prerequisites
+- Python 3.10 or higher
+- PostgreSQL database (preferably hosted on Neon)
 
-Python pipeline loads data into PostgreSQL staging tables
+### Installation
 
-Designed for scalable dataset ingestion
+```bash
+git clone https://github.com/kn58buff/eas550-final-project.git
+cd eas550-final-project
+pip install -r requirements.txt
+```
 
-### 🗄️ Relational Database Design
+### Configuration
+Create a `.env` file in the project root with the following environment variables:
 
-PostgreSQL schema designed using Third Normal Form (3NF)
+```
+PGHOST=
+PGDATABASE=
+PGUSER=
+PGPASSWORD=
+PGPORT=5432
+```
 
-Eliminates redundancy and improves data consistency
+Which can be obtained using the database connection string on Neon:
+```
+postgresql://<user>:<password>@<host>/<dbname>
+```
 
-Maintains clear relationships between entities
+Configure dbt by adding a profile to `~/.dbt/profiles.yml`:
 
-### 🔄 SQL-Based Data Transformation
+```yaml
+eas550_final_project:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: <host>
+      port: 5432
+      user: <user>
+      password: <password>
+      dbname: <dbname>
+      schema: public
+```
 
-Raw data stored in staging tables
 
-SQL scripts transform raw data into normalized relational tables
+## Usage
 
-Clear separation between data ingestion and data modeling
+```bash
+# 1. Execute schema (OLTP)
+python sql/run_schema.py
 
-### 🏗️ Production-Style Project Architecture
+# 2. Ingest raw CSV data with PostgreSQL
+python src/ingestion/ingest_data.py
 
-The project follows a modular data engineering architecture with separation between:
+# 3. Build the star schema with dbt (OLAP layer)
+cd eas550_final_project
+dbt deps          # install dbt packages (first run only)
+dbt run           # materialize staging views and core fact/dim tables
+dbt test          # run schema and data quality tests
+cd ..
 
-ingestion layer
+# 4. Launch the analytics dashboard
+streamlit run streamlit_app/app.py
+```
 
-database schema
+---
 
-SQL transformations
-
-analytics layer
-
-This mirrors how real data engineering systems are designed in production environments.
-
-### 🏗️ System Architecture
+## Architecture
 
 ```
 Raw CSV Data
    │
    ▼
-Python Ingestion Pipeline
-(src/ingestion)
+Python Ingestion Pipeline       (src/ingestion)
    │
    ▼
 PostgreSQL Staging Tables
    │
    ▼
-SQL Transformation Layer
-(sql/schema.sql)
+SQL Transformation Layer        (sql/schema.sql)
    │
    ▼
-Normalized 3NF Database
+Normalized 3NF Database (OLTP)
    │
    ▼
-Analytics / Dashboard
+dbt Models                      (dbt-postgres, eas550_final_project/models)
+   │
+   ▼
+Star Schema (OLAP)
+   │
+   ▼
+Streamlit Analytics Dashboard   (streamlit_app/)
 ```
 
-🔎 Why this matters: Separating ingestion from transformation improves scalability, maintainability, and data quality in real-world data platforms.
+Per project instructions, the initial stages of our pipeline ingested data into a **OLTP**, 3NF database, then transformed that data into a denormalized star schema **OLAP**-style for analytics. We achieved this transformation with **dbt**, giving us versioned, testable SQL models that produce the fact and dimension tables consumed by the dashboard.
 
-### 📂 Project Structure
+## Features
 
-```
-eas550-final-project/
-│
-├── data/
-│   └── raw/                 # Raw CSV datasets
-│
-├── dashboard/               # Analytics / dashboard layer
-│
-├── reports/                 # Generated reports
-│
-├── sql/
-│   ├── schema.sql           # Database schema and normalization logic
-│   └── security.sql         # Database roles and permissions
-│
-├── src/
-│   ├── ingestion/
-│   │   └── ingest_data.py   # CSV → PostgreSQL ingestion pipeline
-│   │
-│   ├── db/
-│   │   └── connection.py    # PostgreSQL connection utilities
-│   │
-│   └── utils/
-│       └── helpers.py       # Helper functions
-│
-├── requirements.txt
-└── README.md
-```
+**CSV Data Ingestion**
+- Automated ingestion of raw CSV datasets into PostgreSQL staging tables
+- Modular Python pipeline designed for scalable, repeatable loads
 
-## ER Diagram
+**Relational Database Design**
+- PostgreSQL schema in Third Normal Form (3NF)
+- Eliminates redundancy and enforces clear entity relationships
+
+**SQL-Based Transformation**
+- Raw CSVs land in staging, then transform into normalized 3NF tables via SQL
+- Clean separation between ingestion and modeling concerns
+
+**OLTP → OLAP Modeling with dbt**
+- dbt-postgres models transform the 3NF database into a star schema
+- Fact and dimension tables built declaratively, with version control and lineage
+- Powers the analytics dashboard with query-friendly denormalized views
+
+**Production-Style Architecture**
+- Modular layers: ingestion → schema → transformation → analytics
+- Mirrors patterns used in real-world data platforms
+
+Why this matters: Separating ingestion from transformation improves scalability, maintainability, and data quality in real-world data platforms.
+
+## Data Model
+
+### ER Diagram
+Entity-relationship diagram of the normalized 3NF schema.
 
 ![ER Diagram](reports/diagrams/erd.png)
 
-## Star Schema
+### Star Schema
+Analytics-oriented star schema derived from the 3NF model.
+
 ![Star Schema Diagram](reports/diagrams/star_schema.png)
 
+## Project Structure
 
-## ⚙️ Tech Stack
 ```
-- Python
-- PostgreSQL
-- Pandas
-- psycopg2 / SQLAlchemy
-- SQL
-- Git
+eas550-final-project/
+├── data/                         # Raw CSV datasets
+├── sql/
+│    ├── raw/
+│    │     └── schema.sql          # Schema and normalization logic
+│    └── security/   
+│          └── security.sql        # Roles and permissions
+├── src/
+│   ├── ingestion/
+│   │   └── ingest_data.py        # CSV → PostgreSQL pipeline
+│   ├── utils/
+│   │   ├── db_connection.py      # PostgreSQL connection utilities
+│   │   └── processing.py         # Data processing helpers
+├── eas550_final_project/
+│          ├── models/            # dbt models (core fact + dimension, and staging tables)
+|          └── tests/             # dbt test to enforce business rules
+├── streamlit_app/                # Streamlit analytics dashboard
+├── reports/                      # Reports, diagrams, and videos
+├── render.yaml                   # Render deployment config
+└── requirements.txt
 ```
 
+## Tech Stack
 
-## 👥 Authors
+| Layer            | Tools                                |
+| ---------------- | ------------------------------------ |
+| Language         | Python 3.10+                         |
+| Database         | PostgreSQL (hosted on Neon)          |
+| Data Processing  | Pandas, NumPy                        |
+| DB Connectivity  | SQLAlchemy, psycopg2                 |
+| Transformations  | SQL, dbt-postgres                    |
+| Dashboard        | Streamlit (deployed on Render)       |
+| Tooling          | sqlfluff, python-dotenv, Git         |
 
-- Kevin Ngyuen
+## Authors
+
+- Kevin Nguyen
 - Tsomorlig Khishigbold
 - Vedant Shinde
 - Aditya More
+
+## License
+
+Coursework project — not licensed for commercial reuse.
