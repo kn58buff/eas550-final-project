@@ -142,6 +142,35 @@ Analytics-oriented star schema derived from the 3NF model.
 
 ![Star Schema Diagram](reports/diagrams/star_schema.png)
 
+
+## Dashboard Preview
+
+Our dashboard showcases 3 dynamic visualizations that can be adjusted via sliders and filters.
+
+Try it live: **[eas550-supply-chain-dashboard.onrender.com](https://eas550-supply-chain-dashboard.onrender.com/)**
+
+### Gross Revenue Analytics
+Revenue and profit trends that can be filtered by a date range or by customer segment.
+
+![Sales Analytics](reports/app_screenshots/demo1.png)
+
+![Sales Analytics2](reports/app_screenshots/demo3.png)
+
+![Sales Analytics3](reports/app_screenshots/demo4.png)
+
+### Revenue Contribution by Category
+Determining which categories drive revenue (and which do not).
+
+![Revenue Insights](reports/app_screenshots/demo2.png)
+
+![Rev Insights2](reports/app_screenshots/demo6.png)
+
+### Highest Spend
+Which customers (and from which segment) spend the most
+
+![Customer spend](reports/app_screenshots/demo5.png)
+
+
 ## Project Structure
 
 ```
