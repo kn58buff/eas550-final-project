@@ -1,8 +1,4 @@
-"""Neon Postgres connection pool for the Streamlit app.
-
-All credentials come from environment variables — never hardcoded.
-Render injects them at runtime via the service's Environment settings.
-"""
+"""Neon Postgres connection pool for the Streamlit app."""
 
 from __future__ import annotations
 
@@ -27,11 +23,6 @@ def _require(name: str) -> str:
 
 @st.cache_resource(show_spinner=False)
 def get_pool() -> pool.ThreadedConnectionPool:
-    """Create a process-wide threaded connection pool.
-
-    `st.cache_resource` keeps the same pool object across reruns and
-    user sessions so we don't open a fresh socket per query.
-    """
     return pool.ThreadedConnectionPool(
         minconn=1,
         maxconn=int(os.environ.get("PG_POOL_MAX", "5")),
@@ -40,7 +31,7 @@ def get_pool() -> pool.ThreadedConnectionPool:
         dbname=_require("PGDATABASE"),
         user=_require("PGUSER"),
         password=_require("PGPASSWORD"),
-        # Neon requires TLS; sslmode=require is safe everywhere.
+        # Neon requires TLS.
         sslmode=os.environ.get("PGSSLMODE", "require"),
         connect_timeout=10,
         application_name="eas550-streamlit",
@@ -49,7 +40,6 @@ def get_pool() -> pool.ThreadedConnectionPool:
 
 @contextmanager
 def get_conn():
-    """Check a connection out of the pool, guarantee it's returned."""
     p = get_pool()
     conn = p.getconn()
     try:
@@ -59,12 +49,7 @@ def get_conn():
 
 
 def run_query(sql: str, params: tuple | None = None) -> pd.DataFrame:
-    """Execute a parameterized query and return a DataFrame.
-
-    Uses a raw psycopg2 cursor rather than pd.read_sql_query so we
-    don't trigger pandas' SQLAlchemy-only DBAPI warning and don't
-    need to pull in SQLAlchemy just to silence it.
-    """
+    # Raw psycopg2 cursor avoids pandas' SQLAlchemy-only DBAPI warning.
     with get_conn() as conn, conn.cursor() as cur:
         cur.execute(sql, params)
         columns = [desc[0] for desc in cur.description]

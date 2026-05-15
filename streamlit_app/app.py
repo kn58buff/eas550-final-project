@@ -1,9 +1,4 @@
-"""EAS 550 Project — Streamlit dashboard.
-
-Reads live from the Neon Postgres warehouse populated by dbt. Every
-chart is driven by a parameterized SQL query against the report_*
-models built in `eas550_final_project`.
-"""
+"""Streamlit dashboard for the EAS 550 supply chain project."""
 
 from __future__ import annotations
 
@@ -15,7 +10,6 @@ import streamlit as st
 
 from db import run_query
 
-# ───────────────────────────── page setup ─────────────────────────────
 st.set_page_config(
     page_title="EAS 550 — Supply Chain Analytics Final Project",
     page_icon="📦",
@@ -29,14 +23,10 @@ st.caption(
 )
 
 
-# ───────────────────────────── data loaders ─────────────────────────────
-# @st.cache_data hashes the query args and reuses the DataFrame across
-# reruns until the TTL expires or the inputs change.
 @st.cache_data(ttl=600, show_spinner="Loading daily revenue…")
 def load_daily_revenue(
     start: date, end: date, segment: str | None
 ) -> pd.DataFrame:
-    # No segment filter: use the pre-aggregated report — cheaper.
     if not segment or segment == "All":
         sql = """
             select order_date, total_orders, gross_revenue, net_profit
@@ -46,8 +36,6 @@ def load_daily_revenue(
         """
         return run_query(sql, params=(start, end))
 
-    # Segment selected: aggregate fact_orders joined to dim_customers
-    # on the fly so the slice respects the customer segment.
     sql = """
         select fo.order_date,
                count(distinct fo.order_id)         as total_orders,
@@ -134,13 +122,11 @@ def load_segments() -> list[str]:
     return df["segment"].tolist()
 
 
-# ───────────────────────────── sidebar widgets ─────────────────────────────
 min_d, max_d = load_date_bounds()
 
 with st.sidebar:
     st.header("Filters")
 
-    # WIDGET 1 — date range slider, drives the time-series chart.
     date_range = st.slider(
         "Order date range",
         min_value=min_d,
@@ -149,14 +135,12 @@ with st.sidebar:
         format="YYYY-MM-DD",
     )
 
-    # WIDGET 2 — Pareto band filter for the revenue-contribution chart.
     pareto_band = st.selectbox(
         "Pareto band (revenue contribution)",
         options=["All", "Top 80%", "Tail 20%"],
         index=0,
     )
 
-    # WIDGET 3 — segment + top-N for customer leaderboard.
     segment = st.selectbox(
         "Customer segment",
         options=["All", *load_segments()],
@@ -165,7 +149,6 @@ with st.sidebar:
     top_n = st.slider("Top N customers", min_value=5, max_value=50, value=10)
 
 
-# ───────────────────────────── KPI row ─────────────────────────────
 daily = load_daily_revenue(date_range[0], date_range[1], segment)
 
 k1, k2, k3 = st.columns(3)
@@ -174,7 +157,6 @@ k2.metric("Net profit", f"${daily['net_profit'].sum():,.0f}")
 k3.metric("Orders", f"{daily['total_orders'].sum():,.0f}")
 
 
-# ───────────────────────────── viz 1: daily revenue ─────────────────────────────
 st.subheader("Gross revenue & net profit over time")
 
 if daily.empty:
@@ -197,7 +179,6 @@ else:
     st.plotly_chart(fig1, width="stretch")
 
 
-# ───────────────────────────── viz 2: revenue contribution ─────────────────────────────
 st.subheader("Revenue contribution by category (Pareto)")
 
 contrib = load_revenue_contribution(pareto_band)
@@ -220,7 +201,6 @@ else:
     st.plotly_chart(fig2, width="stretch")
 
 
-# ───────────────────────────── viz 3: top customers ─────────────────────────────
 st.subheader(f"Top {top_n} customers by lifetime revenue")
 
 top_customers = load_top_customers(segment, top_n)
